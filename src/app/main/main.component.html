@@ -1,0 +1,29 @@
+<div class="row">
+	<div class="col-md-2 d-none d-md-block bg-light sidebar">
+		<div class="sidebar-sticky">
+			<ul class="nav flex-column" *ngFor="let lesson of [1, 2]">
+				<li>
+					<div>Lesson {{ lesson }}</div>
+					<ul *ngFor="let name of ['Basics', 'Tutorial']">
+						<li>
+							<a href (click)="open(lesson, name, $event)">{{ name }}</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+		<ngb-tabset [activeId]="activeId" destroyOnHide="false">
+			<ngb-tab [id]="title(notebook, false)" *ngFor="let notebook of notebooks; let index = index">
+				<ng-template ngbTabTitle>
+					<span>{{title(notebook)}}</span>
+					<span (click)="close(notebook, $event)">&times;</span>
+				</ng-template>
+				<ng-template ngbTabContent>
+				</ng-template>
+			</ngb-tab>
+		</ngb-tabset>
+		<iframe *ngIf="url" [src]="url"></iframe>
+	</main>
+</div>

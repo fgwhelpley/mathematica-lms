@@ -1,0 +1,10 @@
+<ul *ngFor="let lesson of [1, 2]">
+  <li>
+    <div>Lesson {{ lesson }}</div>
+    <ul *ngFor="let item of ['Basics', 'Tutorial']">
+      <li>
+        <a [href]="getNB(lesson, item)" target="_blank">{{ item }}</a>
+      </li>
+    </ul>
+  </li>
+</ul>
