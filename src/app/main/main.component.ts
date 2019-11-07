@@ -29,7 +29,7 @@ export class MainComponent implements OnInit, OnDestroy {
         if (lesson && name) {
           this.open(lesson, name);
         } else {
-
+          this.notebookTabService.clear();
         }
       });
   }

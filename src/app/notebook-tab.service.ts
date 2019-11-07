@@ -51,9 +51,14 @@ export class NotebookTabService {
     }
   }
 
+  clear() {
+    this.notebooks = [];
+    this.update();
+  }
+
   private findIndex(notebook: NotebookTab): number {
     return this.notebooks.findIndex(
-      nb => nb.lesson === notebook.lesson && nb.name === notebook.name
+      nb => nb.id === notebook.id || (nb.lesson === notebook.lesson && nb.name === notebook.name)
     );
   }
 
