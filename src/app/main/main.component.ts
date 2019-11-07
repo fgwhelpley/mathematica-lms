@@ -9,11 +9,9 @@ import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser";
 })
 export class MainComponent implements OnInit {
   notebooks: any[];
-  url: SafeResourceUrl;
   activeId: string;
 
   constructor(
-    private domSanitizer: DomSanitizer,
     private notebookTabService: NotebookTabService
   ) {}
 
@@ -25,27 +23,21 @@ export class MainComponent implements OnInit {
     event.preventDefault();
   }
 
+  close(notebook, event: Event) {
+    this.notebooks = this.notebookTabService.close(notebook);
+    if (this.notebooks.length) {
+      this.update(this.notebooks[this.notebooks.length - 1]);
+    }
+    event.preventDefault();
+  }
+
   title({ lesson, name }, bool: boolean = true): string {
     return bool
       ? `Lesson ${lesson}: ${name}`
       : `L${lesson}-${name.replace(/\s/, "")}`;
   }
 
-  close(notebook, event: Event) {
-    this.notebooks = this.notebookTabService.close(notebook);
-    if (this.notebooks.length) {
-      this.update(this.notebooks[this.notebooks.length - 1]);
-    } else {
-      this.url = null;
-    }
-    event.preventDefault();
-  }
-
   private update({ lesson, name }) {
-    const api = "https://www.wolframcloud.com/obj/fgwhelpley/nbapi";
-    this.url = this.domSanitizer.bypassSecurityTrustResourceUrl(
-      `${api}?lesson=${lesson}&nb=${name}`
-    );
     this.activeId = this.title({ lesson, name }, false);
   }
 }
