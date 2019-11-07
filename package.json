@@ -12,6 +12,7 @@
     "@angular/router": "^8.0.0",
     "@ng-bootstrap/ng-bootstrap": "^5.1.2",
     "core-js": "2",
+    "ngx-cookie-service": "^2.2.0",
     "rxjs": "^6.5.2",
     "zone.js": "^0.9.1"
   },

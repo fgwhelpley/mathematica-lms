@@ -1,10 +1,13 @@
 import { Injectable } from "@angular/core";
 import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser";
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: "root"
 })
 export class NotebookTabService {
+
+  private api = 'https://www.wolframcloud.com/obj/fgwhelpley/nbapi';
   notebooks: NotebookTab[] = [];
   selected: number;
 
@@ -12,7 +15,19 @@ export class NotebookTabService {
     return this.notebooks[this.selected];
   }
 
-  constructor(private domSanitizer: DomSanitizer) {}
+  constructor(
+    private domSanitizer: DomSanitizer,
+    private cookieService: CookieService
+  ) {
+    const notebooks = this.cookieService.get('notebooks');
+    if (notebooks) {
+      try {
+        this.notebooks = JSON.parse(notebooks).map(nb => ({...nb, url: this.url(nb)}));
+      } catch (e) {
+        this.notebooks = [];
+      }
+    }
+  }
 
   open(notebook: NotebookTab): NotebookTab[] {
     this.selected = this.findIndex(notebook);
@@ -24,6 +39,7 @@ export class NotebookTabService {
       // notebook was not previously open so add to back of list
       this.notebooks = [...this.notebooks, { ...notebook, url }];
     }
+    this.update();
     return this.notebooks;
   }
 
@@ -35,6 +51,7 @@ export class NotebookTabService {
       // remove notebook from list
       this.notebooks = this.notebooks.filter((a, i) => i !== index);
     }
+    this.update();
     return this.notebooks;
   }
 
@@ -43,6 +60,17 @@ export class NotebookTabService {
       nb => nb.lesson === notebook.lesson && nb.name === notebook.name
     );
   }
+
+  private update() {
+    this.cookieService.set('notebooks', JSON.stringify(this.notebooks.map(nb => ({lesson: nb.lesson, name: nb.name}))));
+  }
+
+  private url({lesson, name}): SafeResourceUrl {
+      return this.domSanitizer.bypassSecurityTrustResourceUrl(
+        `${this.api}?lesson=${lesson}&nb=${name}`
+      );
+  }
+
 }
 
 interface NotebookTab {

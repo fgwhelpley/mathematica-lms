@@ -10,6 +10,7 @@ import { MainComponent } from "./main/main.component";
 import { FramelessComponent } from "./frameless/frameless.component";
 import { HeaderComponent } from "./header/header.component";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FramelessComponent,
     HeaderComponent
   ],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
