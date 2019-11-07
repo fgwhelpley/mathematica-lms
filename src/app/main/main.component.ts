@@ -1,8 +1,9 @@
 import { Component, Input, OnInit, OnDestroy } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { NotebookTabService } from "../notebook-tab.service";
 import { SafeUrl, DomSanitizer } from "@angular/platform-browser";
 import { takeWhile } from 'rxjs/operators';
+import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: "app-main",
@@ -16,6 +17,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   constructor(
     private notebookTabService: NotebookTabService,
+    private router: Router,
     private route: ActivatedRoute,
     private domSanitizer: DomSanitizer
   ) {
@@ -26,6 +28,8 @@ export class MainComponent implements OnInit, OnDestroy {
         const name = params.get('name');
         if (lesson && name) {
           this.open(lesson, name);
+        } else {
+
         }
       });
   }
@@ -38,25 +42,22 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   open(lesson, name) {
-    this.notebooks = this.notebookTabService.open({ lesson, name });
-    this.update({lesson, name});
+    this.update(this.notebookTabService.open({ lesson, name }));
   }
 
   close(notebook, event: Event) {
-    this.notebooks = this.notebookTabService.close(notebook);
-    if (this.notebooks.length) {
-      this.update(this.notebooks[this.notebooks.length - 1]);
-    }
+    const nb = this.notebookTabService.close(notebook);
+    this.update({id: null, ...nb});
     event.preventDefault();
   }
 
-  title({ lesson, name }, bool: boolean = true): string {
-    return bool
-      ? `Lesson ${lesson}: ${name}`
-      : `L${lesson}-${name.replace(/\s/, "")}`;
+  tabChange(event: NgbTabChangeEvent) {
+    // this.router.navigate([], {queryParams: {lesson: }});
+    event.preventDefault();
   }
 
-  private update({ lesson, name }) {
-    this.activeId = this.title({ lesson, name }, false);
+  private update({ id }) {
+    this.notebooks = this.notebookTabService.notebooks;
+    this.activeId = this.notebooks.length > 0 ? id : null;
   }
 }

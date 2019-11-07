@@ -14,10 +14,10 @@
 		</div>
 	</div>
 	<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-		<ngb-tabset [activeId]="activeId" [destroyOnHide]="false">
-			<ngb-tab [id]="title(notebook, false)" *ngFor="let notebook of notebooks; let index = index">
+		<ngb-tabset [activeId]="activeId" [destroyOnHide]="false" (tabChange)="tabChange($event)">
+			<ngb-tab [id]="notebook.id" *ngFor="let notebook of notebooks; let index = index">
 				<ng-template ngbTabTitle>
-					<span class="mr-2">{{title(notebook)}}</span>
+					<span class="mr-2">{{notebook.title}}</span>
 					<span (click)="close(notebook, $event)">&times;</span>
 				</ng-template>
 				<ng-template ngbTabContent>
