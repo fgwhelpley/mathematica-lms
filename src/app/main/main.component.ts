@@ -52,8 +52,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   tabChange(event: NgbTabChangeEvent) {
-    // this.router.navigate([], {queryParams: {lesson: }});
-    event.preventDefault();
+    const {lesson, name} = this.notebooks.find(nb => nb.id === event.nextId);
+    this.router.navigate([], {queryParams: {lesson, name }, replaceUrl: true});
   }
 
   private update({ id }) {

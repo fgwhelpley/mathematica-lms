@@ -6,7 +6,7 @@
 					<div>Lesson {{ lesson }}</div>
 					<ul *ngFor="let name of ['Basics', 'Tutorial']">
 						<li>
-							<a routerLink="/" [queryParams]="{lesson: lesson, name: name}">{{ name }}</a>
+							<a routerLink="/" [queryParams]="{lesson: lesson, name: name}" [replaceUrl]="true">{{ name }}</a>
 						</li>
 					</ul>
 				</li>
