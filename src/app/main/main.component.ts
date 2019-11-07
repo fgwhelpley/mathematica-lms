@@ -1,26 +1,45 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { NotebookTabService } from "../notebook-tab.service";
-import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser";
+import { SafeUrl, DomSanitizer } from "@angular/platform-browser";
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: "app-main",
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.css"]
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
   notebooks: any[];
   activeId: string;
+  alive = true;
 
   constructor(
-    private notebookTabService: NotebookTabService
-  ) {}
+    private notebookTabService: NotebookTabService,
+    private route: ActivatedRoute,
+    private domSanitizer: DomSanitizer
+  ) {
+    this.route.queryParamMap
+      .pipe(takeWhile(() => this.alive))
+      .subscribe(params => {
+        const lesson = params.get('lesson');
+        const name = params.get('name');
+        if (lesson && name) {
+          this.open(lesson, name);
+        }
+      });
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
+  
+  ngOnDestroy() {
+    this.alive = false;
+  }
 
-  open(lesson, name, event: Event) {
+  open(lesson, name) {
     this.notebooks = this.notebookTabService.open({ lesson, name });
     this.update({lesson, name});
-    event.preventDefault();
   }
 
   close(notebook, event: Event) {

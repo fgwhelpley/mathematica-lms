@@ -6,7 +6,7 @@
 					<div>Lesson {{ lesson }}</div>
 					<ul *ngFor="let name of ['Basics', 'Tutorial']">
 						<li>
-							<a href (click)="open(lesson, name, $event)">{{ name }}</a>
+							<a routerLink="/" [queryParams]="{lesson: lesson, name: name}">{{ name }}</a>
 						</li>
 					</ul>
 				</li>
